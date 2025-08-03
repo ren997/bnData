@@ -10,7 +10,14 @@ params = {
     # "startTime": ...,  # 可以设置起始时间
     # "endTime": ...,    # 可以设置结束时间
 }
-data = requests.get(url, params=params).json()
+proxies = {
+    "http": "http://127.0.0.1:7897",
+    "https": "http://127.0.0.1:7897",
+}
+
+response = requests.get(url, params=params, proxies=proxies)
+data = response.json()
+print(data)
 df = pd.DataFrame(data, columns=[
     'open_time', 'open', 'high', 'low', 'close', 'volume',
     'close_time', 'quote_asset_volume', 'number_of_trades',
@@ -70,4 +77,7 @@ rs = avg_gain / avg_loss
 df['RSI14'] = 100 - (100 / (1 + rs))
 
 # 保存为csv
-df.to_csv('ethusdt_futures_kline_ma_indicators.csv', index=False)
+# df.to_csv('ethusdt_futures_kline_ma_indicators.csv', index=False)
+
+# 保存为json
+df.to_json('ethusdt_futures_kline_ma_indicators.json', orient='records', force_ascii=False)
